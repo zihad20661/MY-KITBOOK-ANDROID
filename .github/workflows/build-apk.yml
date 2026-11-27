@@ -30,6 +30,15 @@ jobs:
           unzip -q MY-KITBOOK-Android-Project.zip -d extracted
           test -f extracted/MY-KITBOOK-Android/settings.gradle
 
+      - name: Fix legacy Kotlin duplicate classes
+        run: |
+          cat >> extracted/MY-KITBOOK-Android/app/build.gradle <<'EOF'
+          configurations.configureEach {
+              exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+              exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+          }
+          EOF
+
       - name: Build debug APK
         run: gradle --no-daemon -p extracted/MY-KITBOOK-Android assembleDebug
 
